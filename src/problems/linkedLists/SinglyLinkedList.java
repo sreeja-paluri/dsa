@@ -182,6 +182,160 @@ public class SinglyLinkedList {
         current.next = (list1 != null) ? list1 : list2;
         return dummy.next;
     }
+
+
+    /**
+     * Detects if the likedlist has a cycle
+     * @param n head node of the linked list
+     * @return true if there is a cycle otherwise return false
+     */
+    public boolean hasCycle(Node n){
+        if(head == null){
+            System.out.println("Empty");
+            return false;
+        }
+        Node fast = n;
+        Node slow = n;
+
+        while(fast != null && fast.next != null){
+            slow =  slow.next;
+            fast = fast.next.next;
+            if(slow == fast) return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Removes nth node from the end of the list
+     * @param n integer number of the node to be removed
+     */
+    public void removeNthNode( int n){
+    Node dummy = new Node(0);
+    dummy.next = head;
+    Node slow = dummy;
+    Node fast = dummy;
+
+    for(int i = 0 ; i< n+1 ; i++){
+        fast = fast.next;
+    }
+
+    while(fast != null){
+        slow = slow.next;
+        fast = fast.next;
+    }
+    slow.next = slow.next.next;
+    head =  dummy.next;
+    }
+
+
+    /**
+     * Adds data at specified index.
+     * @param data Integer to add
+     * @param index Position to insert (0-based)
+     */
+    public void add(int data,int index){
+        if(index < 0 || index > size) throw new IndexOutOfBoundsException();
+        Node newNode = new Node(data);
+        size++;
+        if(index == 0){
+            newNode.next = head;
+            head = newNode;
+            return;
+        }
+        Node current = head;
+        for(int i = 0; i < index-1 ;i++){
+            current = current.next; // last will be equal to index-1
+        }
+        newNode.next = current.next;
+        current.next = newNode;
+    }
+
+    /**
+     * Finds the intersection node of the two linkedlists
+     * @param list1 head of the first list
+     * @param list2 head of the seconde list
+     * @return intersection node or null if no intersection
+     */
+    public Node getIntersection(Node list1, Node list2){
+        Node p1 = list1;
+        Node p2 = list2;
+
+        while(p1 != p2){
+            p1 = (p1 == null) ? list2 : p1.next;
+            p2 = (p2 == null) ? list1 : p2.next;
+        }
+
+        return p1;
+    }
+
+    /**
+     * Checks if the linked list is a palindrome.
+     * @return True if palindrome, false otherwise
+     */
+    public boolean isPalindrome(){
+        if(head == null || head.next == null){
+            return true;
+        }
+        Node slow = head;
+        Node fast = head;
+        while(fast != null && fast.next!= null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        Node prev = null;
+        Node current = slow;
+
+        while(current != null){
+            Node next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        Node p1 = head;
+        Node p2 = prev;
+        while(p2 != null){
+            if(p1.data != p2.data) return false;
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return true;
+    }
+
+    /**
+     *
+     */
+    public int get(int index){
+        if(index < 0 || index > size) throw new IndexOutOfBoundsException();
+        Node current = head;
+        for(int i = 0; i < index ; i++){
+            current = current.next;
+        }
+        return current.data;
+    }
+
+    /**
+     * Removes node at specified index.
+     * @param index 0-based position to remove
+     */
+    public void removeAt(int index){
+        if(index < 0  || index >= size) throw new IndexOutOfBoundsException();
+        size--;
+        if(index == 0){
+            head = head.next;
+            return;
+        }
+        Node current = head;
+        for(int i = 0 ; i < index -1; i++){
+            current = current.next;
+        }
+        current.next = current.next.next;
+
+    }
+
     /**
      * Prints Linked lists in readable format
      */
@@ -235,7 +389,52 @@ public class SinglyLinkedList {
         list2.print();
         list1.merge(list1.head , list2.head);
         list1.print();
+        list1.removeNthNode(2);
+        list1.print();
+        SinglyLinkedList list3 = new SinglyLinkedList();
+        list3.add(10);
+        list3.add(30);
+        list3.add(40);
+        list3.head.next.next.next = list3.head;
+        System.out.println("cycle detected  " + list.hasCycle(list1.head));
+        System.out.println("cycle detected  " + list.hasCycle(list3.head));
+        list1.add(80,3);
+        list1.print();
+        list1.add(90,3);
+        list1.print();
+        SinglyLinkedList list4 = new SinglyLinkedList();
+        SinglyLinkedList list5 = new SinglyLinkedList();
+        list4.add(1);
+        list4.add(2);
+        list4.add(3);
+        list5.add(4);
+        Node intersectNode = list4.head.next.next;
+        list5.head.next = intersectNode;
+        System.out.print("List A: ");
+        list4.print(); // 1 -> 2 -> 3 -> null
+        System.out.print("List B: ");
+        list5.print();
+        SinglyLinkedList util = new SinglyLinkedList();
+        Node intersection = util.getIntersection(list4.head, list5.head);
+        System.out.println("Intersection at: " + (intersection != null ? intersection.data : "null"));
+        SinglyLinkedList list7 = new SinglyLinkedList();
+        list7.add(1);
+        list7.add(2);
+        list7.add(2);
+        list7.add(1);
+        list7.print();
+        System.out.println("Palindrome: " + list7.isPalindrome()); // true
+        list7.print();
+        SinglyLinkedList list6 = new SinglyLinkedList();
+        list6.add(1);
+        list6.add(2);
+        list6.add(3);
+        list6.print();
+        System.out.println("Palindrome: " + list6.isPalindrome());
+        list1.removeAt(2);
+        list1.print();
+        System.out.println("Index data: " +  list1.get(1));
 
-    }
+}
 }
 
