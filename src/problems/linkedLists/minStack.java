@@ -1,90 +1,62 @@
 package problems.linkedLists;
 public class minStack {
-    private class Node {
-        int data;
-        Node next;
-        Node(int data) { this.data = data; }
-    }
-    private Node top;
-    private Stack minStack; // Tracks minimums
+    Stack values;
+    Stack mins;
 
-    public minStack() {
-        minStack = new Stack();
-    }
+   class Stack{
+     int[] arr;
+     int top;
+     Stack() {
+         arr = new int[1000];
+         top = -1;
+     }
+         void push(int val) { arr[++top] = val;}
+       int pop(){
+        return arr[top--];
+     }
+     int peek(){ return arr[top];}
+       boolean isEmpty(){ return top == -1;}
+  }
 
-    public void push(int val) {
-        Node newNode = new Node(val);
-        newNode.next = top;
-        top = newNode;
-        if (minStack.isEmpty() || val <= minStack.peek()) {
-            minStack.push(val);
-        }
-    }
+  public minStack(){
+       values = new Stack();
+       mins = new Stack();
+  }
 
-    public void pop() {
-        if (top == null) throw new IllegalStateException("Stack is empty");
-        int val = top.data;
-        top = top.next;
-        if (val == minStack.peek()) {
-            minStack.pop();
-        }
-    }
+  public void push(int val){
+       values.push(val);
+       if(mins.isEmpty() || val <=  mins.peek()){
+           mins.push(val);
+       }
+  }
 
-    public int top() {
-        if (top == null) throw new IllegalStateException("Stack is empty");
-        return top.data;
-    }
+  public void pop(){
+       int val = values.pop();
+       if(val == mins.peek()){
+           mins.pop();
+       }
+  }
 
-    public int getMin() {
-        if (minStack.isEmpty()) throw new IllegalStateException("Stack is empty");
-        return minStack.peek();
-    }
-
-    public boolean isEmpty() {
-        return top == null;
-    }
-
-    // Auxiliary Stack class with peek
-    private class Stack {
-        private class Node {
-            int data;
-            Node next;
-            Node(int data) { this.data = data; }
-        }
-        private Node top;
-
-        public void push(int data) {
-           Node newNode = new Node(data);
-           newNode.next = top;
-           top = newNode;
-        }
-
-        public int pop() {
-            if (top == null) throw new IllegalStateException("Stack is empty");
-            int data = top.data;
-            top = top.next;
-            return data;
-        }
-
-        public int peek() {
-            if (top == null) throw new IllegalStateException("Stack is empty");
-            return top.data;
-        }
-
-        public boolean isEmpty() {
-            return top == null;
-        }
-    }
+  public int top(){
+       return values.peek();
+  }
+  public int getMin(){
+       return mins.peek();
+  }
 
     public static void main(String[] args) {
         minStack minStack = new minStack();
         minStack.push(3);
         minStack.push(5);
-        System.out.println(minStack.getMin()); // 3
         minStack.push(2);
+        minStack.push(1);
+        System.out.println(minStack.getMin()); // 1
+        System.out.println(minStack.top());    // 1
+        minStack.pop();
         System.out.println(minStack.getMin()); // 2
         minStack.pop();
         System.out.println(minStack.getMin()); // 3
-        System.out.println(minStack.top()); // 5
+        minStack.pop();
+        System.out.println(minStack.getMin());
     }
 }
